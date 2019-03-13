@@ -1,0 +1,153 @@
+ ##############################################################
+ # Конфигурация тестовой среды:
+ #  1 хост master+etcd
+ #  1 хоста routers
+ #  3 хоста GlusterFS
+ #  3 рабочих узла
+ ##############################################################
+
+ ##############################################################
+ # Сервера
+ ##############################################################
+ [OSEv3:children]
+ etcd
+ masters
+ nodes
+ glusterfs
+
+ [etcd]
+ gpn-openshift1.vm.cmx.ru
+
+
+ [masters]
+ gpn-openshift1.vm.cmx.ru
+
+ [nodes]
+ ### Master Nodes (shadulable, use zone=master to prevent use it for usual pods)
+ gpn-openshift1.vm.cmx.ru    openshift_node_group_name='node-config-master' 
+ gpn-openshift2.vm.cmx.ru    openshift_node_group_name='node-config-infra'  
+ gpn-openshift3.vm.cmx.ru    openshift_node_group_name='node-config-compute'  
+
+  ### Nodes to install GlusterFS. Use /dev/sdc диски.
+ [glusterfs]
+ gpn-openshift1.vm.cmx.ru    glusterfs_devices='["/dev/openshift/storage"]'
+ gpn-openshift2.vm.cmx.ru    glusterfs_devices='["/dev/openshift/storage"]'
+ gpn-openshift3.vm.cmx.ru    glusterfs_devices='["/dev/openshift/storage"]'
+
+
+
+ # Параметры:
+ ##############################################################
+ [OSEv3:vars]
+ ansible_ssh_user=aplotnikov
+ ansible_become=True
+
+ product_type=openshift
+ openshift_deployment_type=openshift-enterprise
+ openshift_release=v3.10
+
+
+
+
+ # Отключаем все штатные репозитории, оставляем только artifactory банка
+ openshift_docker_additional_registries="gpn-jumphost:5000"
+ openshift_docker_insecure_registries="gpn-jumphost:5000"
+ system_images_registry="gpn-jumphost:5000"
+ openshift_docker_blocked_registries=registry.access.redhat.com,docker.io,registry.redhat.io
+ osm_etcd_image=gpn-jumphost:5000/rhel7/etcd:3.2.22
+ oreg_url=gpn-jumphost:5000/openshift3/ose-${component}:${version}
+ 
+ 
+ debug_level=2
+
+ # Разрешаем устанавливать "нестнандартные" конфигурации (например 2-а etcd)
+ openshift_enable_unsupported_configurations=True
+
+ # Отключаем проверки (не рекомендется для продуктивных сред)
+
+ openshift_disable_check=disk_availability,memory_availability,docker_image_availability,docker_storage,package_availability,package_version
+
+
+ # Включаем необходимые компоненты
+ openshift_clock_enabled=True
+ os_firewall_use_firewalld=True
+
+
+ # Wildcard DNS entry for Routes. Используется при создании route.
+ # Hеобходимо указть домен на который настроен DNS Wildcard *.osd.abb-win.akbars.ru.
+ # *.osd.abb-win.akbars.ru должен вести на внешний балансировщик кластера (-> osd-master.abb-win.akbars.ru).
+
+ openshift_master_default_subdomain=gpn-openshift1.vm.cmx.ru
+
+ # Internal Master Hostname
+ # This will be the hostname that internal users/tools/components will use to talk with master OpenShift API
+ # Должен быть адерс балансировщика (это osd-master.abb-win.akbars.ru)
+
+ openshift_master_cluster_hostname=gpn-openshift1.vm.cmx.ru
+
+ # Public Master Hostname
+ # This will be the hostname that external users and/or tools will use to login to the OpenShift cluster
+
+ openshift_master_cluster_public_hostname=web-gpn-openshift1.vm.cmx.ru
+ 
+ # OpenShift SDN
+ os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
+
+
+ # Htpasswd auth. Use 'htpasswd -nb <user_name> <password>' for password generating
+ openshift_master_identity_providers=[{'name':'htpasswd', 'kind':'HTPasswdPasswordIdentityProvider', 'login':'true', 'challenge':'true',}]
+ openshift_master_htpasswd_users={'admin': '$apr1$QixBaQ1O$.x13wKU2FvLtkrG/o4Ss60'}
+
+
+
+ ##############################################################
+ # Router
+ ##############################################################
+ openshift_router_selector='node-role.kubernetes.io/master=true'
+ openshift_registry_selector='node-role.kubernetes.io/infra=true'
+
+
+ ##############################################################
+ # Service catalog не разворачиваем
+ ##############################################################
+ openshift_enable_service_catalog=False
+ ansible_service_broker_install=False
+ template_service_broker_install=False
+
+ ##############################################################
+ # Логирование и мониторинг разворачиваем отдельно
+ ##############################################################
+ openshift_metrics_install_metrics=true
+
+ ##############################################################
+ # Примеры сервисов и стримы для стандартных приложения
+ ##############################################################
+ openshift_install_examples=True
+ openshift_examples_modify_imagestreams=true
+
+
+ ##############################################################
+ # Gluster
+ ##############################################################
+ openshift_storage_glusterfs_image="rhgs3/rhgs-server-rhel7:v.3.10"
+ openshift_storage_glusterfs_block_image="rhgs3/rhgs-gluster-block-prov-rhel7:v.3.10"
+ openshift_storage_glusterfs_heketi_image="rhgs3/rhgs-volmanager-rhel7:v.3.10"
+ openshift_storage_glusterfs_block_deploy=True
+ openshift_storage_glusterfs_block_host_vol_size=10
+ openshift_storage_glusterfs_block_storageclass=True
+ openshift_storage_glusterfs_block_storageclass_default=True
+ 
+ openshift_storage_glusterfs_is_native=True
+ openshift_master_dynamic_provisioning_enabled=True
+ openshift_storage_glusterfs_heketi_is_native=True
+ openshift_storage_glusterfs_wipe=True
+ 
+ 
+ 
+
+
+
+
+
+
+

@@ -1,0 +1,315 @@
+for repo in \
+rhel-7-server-rpms \
+rhel-7-server-extras-rpms \
+rhel-7-server-ansible-2.4-rpms \
+rhel-7-server-ose-3.10-rpms
+do
+  reposync --gpgcheck -lm --repoid=${repo} --download_path=/repos 
+  createrepo -v /repos/${repo} -o /repos/${repo} 
+done
+
+
+
+docker pull registry.access.redhat.com/openshift3/csi-attacher:v3.10.101
+docker pull registry.access.redhat.com/openshift3/csi-driver-registrar:v3.10.101
+docker pull registry.access.redhat.com/openshift3/csi-livenessprobe:v3.10.101
+docker pull registry.access.redhat.com/openshift3/csi-provisioner:v3.10.101
+docker pull registry.access.redhat.com/openshift3/image-inspector:v3.10.101
+docker pull registry.access.redhat.com/openshift3/local-storage-provisioner:v3.10.101
+docker pull registry.access.redhat.com/openshift3/manila-provisioner:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-ansible:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-cli:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-cluster-capacity:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-deployer:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-descheduler:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-docker-builder:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-docker-registry:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-egress-dns-proxy:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-egress-http-proxy:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-egress-router:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-f5-router:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-haproxy-router:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-hyperkube:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-hypershift:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-keepalived-ipfailover:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-pod:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-node-problem-detector:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-recycler:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-web-console:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-node:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-control-plane:v3.10.101
+docker pull registry.access.redhat.com/openshift3/registry-console:v3.10.101
+docker pull registry.access.redhat.com/openshift3/snapshot-controller:v3.10.101
+docker pull registry.access.redhat.com/openshift3/snapshot-provisioner:v3.10.101
+docker pull registry.access.redhat.com/openshift3/apb-base:v3.10.101
+docker pull registry.access.redhat.com/openshift3/apb-tools:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-service-catalog:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-ansible-service-broker:v3.10.101
+docker pull registry.access.redhat.com/openshift3/mariadb-apb:v3.10.101
+docker pull registry.access.redhat.com/openshift3/mediawiki-apb:v3.10.101
+docker pull registry.access.redhat.com/openshift3/mysql-apb:v3.10.101
+docker pull registry.access.redhat.com/openshift3/ose-template-service-broker:v3.10.101
+docker pull registry.access.redhat.com/openshift3/postgresql-apb:v3.10.101
+docker pull registry.access.redhat.com/rhel7/etcd:3.2.22
+docker pull registry.access.redhat.com/openshift3/efs-provisioner:v3.10.101
+docker pull registry.access.redhat.com/openshift3/logging-auth-proxy:v3.10.101
+docker pull registry.access.redhat.com/openshift3/logging-curator:v3.10.101
+docker pull registry.access.redhat.com/openshift3/logging-elasticsearch:v3.10.101
+docker pull registry.access.redhat.com/openshift3/logging-eventrouter:v3.10.101
+docker pull registry.access.redhat.com/openshift3/logging-fluentd:v3.10.101
+docker pull registry.access.redhat.com/openshift3/logging-kibana:v3.10.101
+docker pull registry.access.redhat.com/openshift3/oauth-proxy:v3.10.101
+docker pull registry.access.redhat.com/openshift3/metrics-cassandra:v3.10.101
+docker pull registry.access.redhat.com/openshift3/metrics-hawkular-metrics:v3.10.101
+docker pull registry.access.redhat.com/openshift3/metrics-hawkular-openshift-agent:v3.10.101
+docker pull registry.access.redhat.com/openshift3/metrics-heapster:v3.10.101
+docker pull registry.access.redhat.com/openshift3/metrics-schema-installer:v3.10.101
+docker pull registry.access.redhat.com/openshift3/prometheus:v3.10.101
+docker pull registry.access.redhat.com/openshift3/prometheus-alert-buffer:v3.10.101
+docker pull registry.access.redhat.com/openshift3/prometheus-alertmanager:v3.10.101
+docker pull registry.access.redhat.com/openshift3/prometheus-node-exporter:v3.10.101
+docker pull registry.access.redhat.com/cloudforms46/cfme-openshift-postgresql
+docker pull registry.access.redhat.com/cloudforms46/cfme-openshift-memcached
+docker pull registry.access.redhat.com/cloudforms46/cfme-openshift-app-ui
+docker pull registry.access.redhat.com/cloudforms46/cfme-openshift-app
+docker pull registry.access.redhat.com/cloudforms46/cfme-openshift-embedded-ansible
+docker pull registry.access.redhat.com/cloudforms46/cfme-openshift-httpd
+docker pull registry.access.redhat.com/cloudforms46/cfme-httpd-configmap-generator
+docker pull registry.access.redhat.com/rhgs3/rhgs-server-rhel7
+docker pull registry.access.redhat.com/rhgs3/rhgs-volmanager-rhel7
+docker pull registry.access.redhat.com/rhgs3/rhgs-gluster-block-prov-rhel7
+docker pull registry.access.redhat.com/rhgs3/rhgs-s3-server-rhel7
+docker pull registry.access.redhat.com/jboss-amq-6/amq63-openshift
+docker pull registry.access.redhat.com/jboss-datagrid-7/datagrid71-openshift
+docker pull registry.access.redhat.com/jboss-datagrid-7/datagrid71-client-openshift
+docker pull registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift
+docker pull registry.access.redhat.com/jboss-datavirt-6/datavirt63-driver-openshift
+docker pull registry.access.redhat.com/jboss-decisionserver-6/decisionserver64-openshift
+docker pull registry.access.redhat.com/jboss-processserver-6/processserver64-openshift
+docker pull registry.access.redhat.com/jboss-eap-6/eap64-openshift
+docker pull registry.access.redhat.com/jboss-eap-7/eap70-openshift
+docker pull registry.access.redhat.com/jboss-webserver-3/webserver31-tomcat7-openshift
+docker pull registry.access.redhat.com/jboss-webserver-3/webserver31-tomcat8-openshift
+docker pull registry.access.redhat.com/openshift3/jenkins-1-rhel7:v3.10.101
+docker pull registry.access.redhat.com/openshift3/jenkins-2-rhel7:v3.10.101
+docker pull registry.access.redhat.com/openshift3/jenkins-agent-maven-35-rhel7:v3.10.101
+docker pull registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7:v3.10.101
+docker pull registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.10.101
+docker pull registry.access.redhat.com/openshift3/jenkins-slave-maven-rhel7:v3.10.101
+docker pull registry.access.redhat.com/openshift3/jenkins-slave-nodejs-rhel7:v3.10.101
+docker pull registry.access.redhat.com/rhscl/mongodb-32-rhel7
+docker pull registry.access.redhat.com/rhscl/mysql-57-rhel7
+docker pull registry.access.redhat.com/rhscl/perl-524-rhel7
+docker pull registry.access.redhat.com/rhscl/php-56-rhel7
+docker pull registry.access.redhat.com/rhscl/postgresql-95-rhel7
+docker pull registry.access.redhat.com/rhscl/python-35-rhel7
+docker pull registry.access.redhat.com/redhat-sso-7/sso70-openshift
+docker pull registry.access.redhat.com/rhscl/ruby-24-rhel7
+docker pull registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+docker pull registry.access.redhat.com/redhat-sso-7/sso71-openshift
+docker pull registry.access.redhat.com/rhscl/nodejs-6-rhel7
+docker pull registry.access.redhat.com/rhscl/mariadb-101-rhel7
+
+
+
+
+
+# Установка DNS сервера(bind)
+
+
+yum install -y bind
+yum install -y bind-utils
+
+
+[root@gpn-jumphost ~]# cat /etc/bind/zones/master/db.vm.cmx.ru
+;
+; BIND data file for vm.cmx.ru
+;
+$TTL    3h
+@       IN      SOA       vm.cmx.ru admin.vm.cmx.ru. (
+                          1        ; Serial
+                          3h       ; Refresh after 3 hours
+                          1h       ; Retry after 1 hour
+                          1w       ; Expire after 1 week
+                          1h )     ; Negative caching TTL of 1 day
+;
+
+@       IN      NS      gpn-jumphost.vm.cmx.ru.
+@       IN      NS      gpn-jumphost.vm.cmx.ru.
+
+
+gpn-jumphost.vm.cmx.ru.         IN      A       192.168.20.10
+gpn-openshift1.vm.cmx.ru.       IN      A       192.168.20.11
+gpn-openshift2.vm.cmx.ru.       IN      A       192.168.20.12
+gpn-openshift3.vm.cmx.ru.       IN      A       192.168.20.13
+*                               IN      A       192.168.20.11
+
+
+
+
+[root@gpn-jumphost ~]# cat /etc/named.rfc1912.zones
+// named.rfc1912.zones:
+//
+// Provided by Red Hat caching-nameserver package
+//
+// ISC BIND named zone configuration for zones recommended by
+// RFC 1912 section 4.1 : localhost TLDs and address zones
+// and http://www.ietf.org/internet-drafts/draft-ietf-dnsop-default-local-zones-02.txt
+// (c)2007 R W Franks
+//
+// See /usr/share/doc/bind*/sample/ for example named configuration files.
+//
+
+zone "localhost.localdomain" IN {
+        type master;
+        file "named.localhost";
+        allow-update { none; };
+};
+
+zone "localhost" IN {
+        type master;
+        file "named.localhost";
+        allow-update { none; };
+};
+
+zone "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa" IN {
+        type master;
+        file "named.loopback";
+        allow-update { none; };
+};
+
+zone "1.0.0.127.in-addr.arpa" IN {
+        type master;
+        file "named.loopback";
+        allow-update { none; };
+};
+
+zone "0.in-addr.arpa" IN {
+        type master;
+        file "named.empty";
+        allow-update { none; };
+};
+
+zone "linuxconfig.org" {
+       type master;
+       file "/etc/bind/zones/master/db.linuxconfig.org";
+};
+
+zone "gpn.com" {
+       type master;
+       file "/etc/bind/zones/master/db.gpn.com";
+};
+
+
+zone "vm.cmx.ru" {
+       type master;
+       file "/etc/bind/zones/master/db.vm.cmx.ru";
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Репы
+[rhel-7-server-rpms]
+name=rhel-7-server-rpms
+baseurl=http://gpn-jumphost.vm.cmx.ru/repos/rhel-7-server-rpms 
+enabled=1
+gpgcheck=0
+[rhel-7-server-extras-rpms]
+name=rhel-7-server-extras-rpms
+baseurl=http://gpn-jumphost.vm.cmx.ru/repos/rhel-7-server-extras-rpms 
+enabled=1
+gpgcheck=0
+[rhel-7-server-ansible-2.4-rpms]
+name=rhel-7-server-ansible-2.4-rpms
+baseurl=http://gpn-jumphost.vm.cmx.ru/repos/rhel-7-server-ansible-2.4-rpms 
+enabled=1
+gpgcheck=0
+[rhel-7-server-ose-3.10-rpms]
+name=rhel-7-server-ose-3.10-rpms
+baseurl=http://gpn-jumphost.vm.cmx.ru/repos/rhel-7-server-ose-3.10-rpms 
+enabled=1
+gpgcheck=0
+
+
+
+
+ subscription-manager config --rhsm.manage_repos=1
+ vi /etc/yum/pluginconf.d/subscription-manager.conf
+ 
+ 
+for host in gpn-openshift1.vm.cmx.ru \
+    gpn-openshift2.vm.cmx.ru \
+    gpn-openshift3.vm.cmx.ru; \
+    do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; \
+    done
+
+
+#packages
+
+yum install -y wget git net-tools bind-utils yum-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
+
+
+yum update -y
+reboot
+
+yum install -y openshift-ansible 
+
+yum install -y docker-1.13.1
+
+	## Настройка devicemapper
+	## For more details refer to "man container-storage-setup"
+		nano /etc/sysconfig/docker-storage-setup
+		 VG=openshift 
+		 DEVS=/dev/sdb
+
+		 STORAGE_DRIVER=devicemapper
+		 CONTAINER_THINPOOL=docker
+		 DATA_SIZE=15G
+		docker-storage-setup
+	 
+	## Настройка overlay2 (не ставить, отличная штука, но не рекомендуется из-за проблем с SELINUX)
+		vi /etc/sysconfig/docker-storage-setup
+      STORAGE_DRIVER=overlay2
+      DEVS=/dev/sdb
+      CONTAINER_ROOT_LV_NAME=dockerlv
+      CONTAINER_ROOT_LV_SIZE=50G
+      CONTAINER_ROOT_LV_MOUNT_PATH=/var/lib/docker
+      VG=openshift
+
+		docker-storage-setup
+
+    
+    vi /etc/sysconfig/docker
+--insecure-registry 172.30.0.0/16 --insecure-registry 192.168.0.0/16
+
+
+
+yum install -y docker-novolume-plugin
+systemctl enable docker-novolume-plugin
+systemctl start docker-novolume-plugin
+
+    vi /etc/sysconfig/docker
+--authorization-plugin=docker-novolume-plugin
+
+
+yum install glusterfs-fuse
+
+
+
+
+
+
+
+
